@@ -1,8 +1,8 @@
 cls
 
 # Specify Paths
-$UpdatesSource = "C:\Users\james.espinoza\Desktop\Office2016"
-$ExtractFolder = "C:\Users\james.espinoza\Desktop\Office2016Extract"
+$UpdatesSource = "YourPath\OfficeCabs"
+$ExtractFolder = "YourPath\ExtractFolder"
 
 # Start Extract
 $UpdateFiles = Get-ChildItem -Path $UpdatesSource -Recurse -Filter *.cab | select Name, Directory
