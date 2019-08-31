@@ -11,7 +11,7 @@ TD {border-width: 1px; padding: 3px; border-style: solid; border-color: black;}
 "@
 
 Write-Host "============================" -ForegroundColor Green
-Write-Host "Chobani - Gather Diagnostics" -ForegroundColor Green
+Write-Host "Title" -ForegroundColor Green
 Write-Host "============================" -ForegroundColor Green
 
 try {
