@@ -55,8 +55,47 @@ function Get-SystemInfo
 		
 		Write-Host "OS Info" -Foreground Green -BackgroundColor Black
 		(Get-CimInstance -ClassName Win32_OperatingSystem -CimSession $CimSesh | `
-			Select-Object -Property Caption, `
-						  Version, `
+			Select-Object -Property @{ N = "Name"; E = { $_.Caption } }, `
+						  @{
+				N = "Version"; E = {
+					if ($_.Version -like "*18362*")
+					{
+						$_.Version + " (1903)"
+					}
+					elseif ($_.Version -like "*17763*")
+					{
+						$_.Version + " (1809)"
+					}
+					elseif ($_.Version -like "*17134*")
+					{
+						$_.Version + " (1803)"
+					}
+					elseif ($_.Version -like "*16299*")
+					{
+						$_.Version + " (1709)"
+					}
+					elseif ($_.Version -like "*15063*")
+					{
+						$_.Version + " (1703)"
+					}
+					elseif ($_.Version -like "*14393")
+					{
+						$_.Version + " (1607)"
+					}
+					elseif ($_.Version -like "*10586*")
+					{
+						$_.Version + " (1511)"
+					}
+					elseif ($_.Version -like "*10240*")
+					{
+						$_.Version + " (1507)"
+					}
+					else
+					{
+						$_.Version
+					}
+				}
+			}, `
 						  OSArchitecture | `
 			Format-List | Out-String).Trim()
 		
@@ -67,7 +106,18 @@ function Get-SystemInfo
 			Select-Object @{ Name = "Drive Letter"; Expression = { $_.DeviceID } }, `
 						  @{ Name = "Disk Size"; Expression = { [string][int32]($_.Size / 1GB) + " GB" } }, `
 						  @{ Name = "Free Space"; Expression = { [string][int32]($_.FreeSpace / 1GB) + " GB" } }, `
-						  @{ Name = "Bitlocker Status"; Expression = { (Get-CimInstance -CimSession $CimSesh -ClassName win32_EncryptableVolume -Namespace root\cimv2\Security\MicrosoftVolumeEncryption | ? { $_.DriveLetter -eq "C:" }).ProtectionStatus } } | `
+						  @{ Name = "Bitlocker Status"; Expression = {
+					$BitlockerStatus = (Get-CimInstance -CimSession $CimSesh -ClassName win32_EncryptableVolume -Namespace root\cimv2\Security\MicrosoftVolumeEncryption | ? { $_.DriveLetter -eq "C:" }).ProtectionStatus
+					if ($BitlockerStatus -eq "1")
+					{
+						Write-Output "On"
+					}
+					else
+					{
+						Write-Output "Off"
+					}
+				}
+			} | `
 			Format-List | Out-String).Trim()
 		
 		Write-Host "`n-------------------`n"
