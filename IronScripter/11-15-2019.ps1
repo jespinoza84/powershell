@@ -28,5 +28,5 @@ function ConvertFrom-CelsiusToFahrenheit
   Write-Host "Converting $Celsius Celsius to Fahrenheit"
   $Conversion = ($Celsius * 1.8) + 32 
   $RoundedResult = [math]::Round($Conversion,2)
-  Write-Host "$Celsius Celsius is $Conversion Fahrenheit"
+  Write-Host "$Celsius Celsius is $RoundedResult Fahrenheit"
 }
