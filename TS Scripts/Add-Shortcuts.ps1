@@ -1,9 +1,9 @@
 $Apps = (
-	"Excel",
-	"Outlook",
-	"Word",
-	"OneDrive",
-	"Acrobat Reader DC"
+	'Excel',
+	'Outlook',
+	'Word',
+	'OneDrive',
+	'Acrobat Reader DC'
 )
 
 foreach ($App in $Apps)
