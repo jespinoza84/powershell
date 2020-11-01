@@ -1,5 +1,5 @@
 <# 
-
+Test
 Download SpeedTest CLI @ https://www.speedtest.net/apps/cli
 .\speedetest.exe --help
 
