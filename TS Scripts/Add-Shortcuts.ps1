@@ -1,12 +1,12 @@
 $Apps = (
-	"Excel 2016",
-	"Outlook 2016",
-	"Word 2016",
-	"OneDrive for Business",
+	"Excel",
+	"Outlook",
+	"Word",
+	"OneDrive",
 	"Acrobat Reader DC"
 )
 
 foreach ($App in $Apps)
 {
-	Copy-Item -Path "$env:ProgramData\Microsoft\Windows\Start Menu\Programs\$App.lnk" -Destination "$env:PUBLIC\Desktop" -Force -ErrorAction SilentlyContinue
+	Copy-Item -Path ('{0}\Microsoft\Windows\Start Menu\Programs\{1}.lnk' -f $env:ProgramData, $App) -Destination ('{0}\Desktop' -f $env:PUBLIC) -Force -ErrorAction SilentlyContinue
 }
