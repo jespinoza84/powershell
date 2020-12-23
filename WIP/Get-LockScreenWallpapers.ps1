@@ -78,6 +78,11 @@ function Get-LockScreenWallpapers
     [string]$Destination = "$env:USERPROFILE\Pictures\LockScreenWallpapers"
   )
 
+  $DomainStatus = (Get-WmiObject -Class win32_computersystem).partofdomain
+  if ($DomainStatus){
+    $Destination = "$env:USERPROFILE\OneDrive - Chobani LLC\Pictures\LockScreenWallpapers"
+  }
+
   $Source = "$env:USERPROFILE\AppData\Local\Packages\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\LocalState\Assets\"
 
   $CachedImages = Get-ChildItem -Path $Source -Recurse 
@@ -96,4 +101,8 @@ function Get-LockScreenWallpapers
         Remove-Item -Path $CopiedWallpaper.Path -Force -Confirm:$false
       }
   }
+  
+  $NewWallpapers =  Get-ChildItem -Path $Destination | Where-Object {$_.LastAccessTime -gt (Get-Date).AddMinutes(-1)}
+  
+  New-BurntToastNotification -Text "Lockscreen wallpapers updated. $($NewWallpapers.Count) new wallpapers created."
 }
