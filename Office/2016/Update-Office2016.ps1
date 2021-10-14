@@ -3,13 +3,10 @@ BEGIN {
     $SourcePath = '\\source\unc\path\Updates'
     $ExtractPath = 'C:\temp\office2016'
     $Office2016Path = '\\application\unc\path'
-    $StartTime = Get-Date
-    $CmAppName = "Office 2016"
+    $CmAppName = "Office 2016" # Applcation Name in CM
+    $SiteCode = "XYZ" # CM Site code
+    $ProviderMachineName = "primary.com" # CM Primary Server
     #endregion
-
-    #region ConfigMgr Module
-    $SiteCode = "XYZ" # site code
-    $ProviderMachineName = "primary.com" # Primary server
 
     # Import the ConfigurationManager.psd1 module 
     if ($null -eq (Get-Module ConfigurationManager)) {
@@ -20,7 +17,6 @@ BEGIN {
     if ($null -eq (Get-PSDrive -Name $SiteCode -PSProvider CMSite -ErrorAction SilentlyContinue)) {
         New-PSDrive -Name $SiteCode -PSProvider CMSite -Root $ProviderMachineName
     }
-    #endregion
 
     function Write-Log {
         [CmdletBinding()]
@@ -35,7 +31,7 @@ BEGIN {
             [string]$Severity = 'Information',
 
             [string]$LogPath = "$env:windir\logs",
-            [string]$ScriptName = 'Update-Office2016',
+            [string]$ScriptName = "Update-$($CMAppName)",
             [string]$FileName = "$($ScriptName).log"
 
         )
@@ -50,7 +46,8 @@ BEGIN {
 }
 
 PROCESS {
-    
+    $StartTime = Get-Date
+
     Write-Log -Message " ----- Starting $ScriptName at $StartTime ----- "
 
     # Check for local extract folder
@@ -63,7 +60,7 @@ PROCESS {
         Remove-Item -Path "$ExtractPath/*" -Recurse -Force
     }
   
-    #Copy items locally
+    # Copy items from source update path to local extract path
     Write-Log -Message "Copying content from $($SourcePath) to $($ExtractPath)"
     $SourceFiles = Get-ChildItem -Path $SourcePath -Recurse -Filter '*.cab'
      
@@ -72,7 +69,7 @@ PROCESS {
         Copy-Item -Path $sFile.FullName -Destination $ExtractPath -Force
     }
 
-    # Start extract, excluding lip* (language packs)
+    # Start local extract, excluding lip* (language packs)
     Write-Log -Message 'Beginning CAB file extract'
     $UpdateFiles = Get-ChildItem -Path $ExtractPath -Recurse -Filter '*.cab' -Exclude 'lip*'
 
@@ -85,7 +82,7 @@ PROCESS {
     Write-Log -Message 'Removing XML metadata'
     Remove-Item -Path $ExtractPath -Filter '*.xml' -Force -Recurse
 
-    # Copy to office 2016 application source
+    # Copy to Office 2016 application content source
     Write-Log -Message "Copying MSP files back to $($Office2016Path)"
     $ExtractedFiles = Get-ChildItem -Path $ExtractPath -Recurse -Filter '*.msp'
 
@@ -94,7 +91,7 @@ PROCESS {
         Copy-Item -Path $eFile.FullName -Destination $Office2016Path -Force
     }
 
-    # Set location to NOR:\
+    # Set location to XYZ:\ (your site code)
     Write-Log -Message "Setting location to $($Sitecode):\"
     Set-Location "$($SiteCode):\"
 
@@ -102,7 +99,7 @@ PROCESS {
     Write-Log -Message 'Updating distribution points for Office 2016'
     Update-CMDistributionPoint -ApplicationName $CmAppName -DeploymentTypeName 'Install'
 
-    # Clear out local content
+    # Clear out local extract content
     Write-Log -Message "Removing local content from $($ExtractPath)"
     Set-Location $env:SystemDrive
     Remove-Item -Path "$ExtractPath/*" -Recurse -Force
