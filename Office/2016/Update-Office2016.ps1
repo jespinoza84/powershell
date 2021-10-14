@@ -91,6 +91,11 @@ PROCESS {
         Copy-Item -Path $eFile.FullName -Destination $Office2016Path -Force
     }
 
+    # Clear out local extract content
+    Write-Log -Message "Removing local content from $($ExtractPath)"
+    Set-Location $env:SystemDrive
+    Remove-Item -Path "$ExtractPath/*" -Recurse -Force
+
     # Set location to XYZ:\ (your site code)
     Write-Log -Message "Setting location to $($Sitecode):\"
     Set-Location "$($SiteCode):\"
@@ -98,11 +103,6 @@ PROCESS {
     # Update application content on distribution points
     Write-Log -Message 'Updating distribution points for Office 2016'
     Update-CMDistributionPoint -ApplicationName $CmAppName -DeploymentTypeName 'Install'
-
-    # Clear out local extract content
-    Write-Log -Message "Removing local content from $($ExtractPath)"
-    Set-Location $env:SystemDrive
-    Remove-Item -Path "$ExtractPath/*" -Recurse -Force
 }
 
 END {
