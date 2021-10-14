@@ -96,7 +96,7 @@ PROCESS {
     Set-Location $env:SystemDrive
     Remove-Item -Path "$ExtractPath/*" -Recurse -Force
 
-    # Set location to XYZ:\ (your site code)
+    # Set location to $SiteCode
     Write-Log -Message "Setting location to $($Sitecode):\"
     Set-Location "$($SiteCode):\"
 
