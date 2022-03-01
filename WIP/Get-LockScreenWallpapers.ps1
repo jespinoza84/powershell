@@ -73,7 +73,7 @@ PROCESS {
   $Destination = "$env:USERPROFILE\Pictures\LockScreenWallpapers"
   $Source = "$env:USERPROFILE\AppData\Local\Packages\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\LocalState\Assets\"
   $NewImages = Get-ChildItem -Path $Source -Recurse
-  
+
   if (!(Test-Path -Path $Destination -PathType Container)) {
     New-Item -Path $Destination -ItemType Directory -Force | Out-Null
   }
@@ -81,7 +81,7 @@ PROCESS {
   foreach ($Wallpaper in $NewImages) {
     if (!(Test-Path -Path "$Destination\$($Wallpaper.Name).jpg" -PathType Leaf)){
       # File doesn't exist. Copy.
-      Copy-Item -Path $Wallpaper.FullName -Destination ('{0}\{1}.jpg' -f $Destination, $Wallpaper)
+      Copy-Item -Path $Wallpaper.FullName -Destination "$Destination\$Wallpaper.jpg"
     }
     else {
       # File exists. Do not copy. Affects File metadata.
@@ -95,7 +95,7 @@ PROCESS {
     }
   }
     
-  $NewWallpapers = Get-ChildItem -Path $Destination | Where-Object { $_.LastAccessTime -gt (Get-Date).AddSeconds(-1)}
+  $NewWallpapers = Get-ChildItem -Path $Destination | Where-Object { $_.LastAccessTime -gt (Get-Date).AddSeconds(-10)}
   
   if ($NewWallpapers.Count -ge 1){
     New-BurntToastNotification -Text "Nice!","Lockscreen wallpapers updated.`n$($NewWallpapers.Count) new wallpapers created." -AppLogo "$env:USERPROFILE\Documents\Happy.png"
