@@ -1,3 +1,5 @@
+# Task sequence powershell script to add shortcuts to public desktop (for all users)
+
 $Add = (
   'Excel',
   'Excel 2016',
@@ -20,5 +22,5 @@ $Remove = (
 
 foreach ($App in $Remove)
 {
-  Remove-Item -Path ('{0}\Desktop\{1}' -f $env:PUBLIC,$App) -Force
+  Remove-Item -Path "$env:PUBLIC\Desktop\$App" -Force
 }
