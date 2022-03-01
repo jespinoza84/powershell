@@ -73,14 +73,20 @@ PROCESS {
   $Destination = "$env:USERPROFILE\Pictures\LockScreenWallpapers"
   $Source = "$env:USERPROFILE\AppData\Local\Packages\Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy\LocalState\Assets\"
   $CachedImages = Get-ChildItem -Path $Source -Recurse
-  $DestinationResults = Get-ChildItem $Destination
+  # $DestinationResults = Get-ChildItem $Destination
   
   if (!(Test-Path -Path $Destination -PathType Container)) {
     New-Item -Path $Destination -ItemType Directory -Force | Out-Null
   }
   
   foreach ($Wallpaper in $CachedImages) {
-    Copy-Item -Path $Wallpaper.FullName -Destination ('{0}\{1}.jpg' -f $Destination, $Wallpaper)
+    if (!(Test-Path -Path $Wallpaper.FullName -PathType Leaf)){
+      # File doesn't exist. Copy.
+      Copy-Item -Path $Wallpaper.FullName -Destination ('{0}\{1}.jpg' -f $Destination, $Wallpaper)
+    }
+    else {
+      # File exists. Do not copy. Affects File metadata.
+    }
   }
     
   $Resolution = Get-FileMetaData -folder $Destination
@@ -91,6 +97,11 @@ PROCESS {
   }
     
   $NewWallpapers = Get-ChildItem -Path $Destination | Where-Object { $_.LastAccessTime -gt (Get-Date).AddMinutes(-1) }
-    
-  New-BurntToastNotification -Text "Lockscreen wallpapers updated.`n$($NewWallpapers.Count) new wallpapers created."
+  
+  if ($NewWallpapers.Count -ge 1){
+    New-BurntToastNotification -Text "Scheduled Script","Lockscreen wallpapers updated.`n$($NewWallpapers.Count) new wallpapers created."
+  }
+  else {
+    New-BurntToastNotification -Text "Scheduled Script!","No new lockscreen wallpapers found." -AppLogo "$env:USERPROFILE\Documents\Sad.png"
+  }
 }
