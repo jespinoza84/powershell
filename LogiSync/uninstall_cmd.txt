@@ -1,0 +1,1 @@
+powershell.exe -ExecutionPolicy Bypass -Command "& {Start-Process -FilePath "${env:ProgramFiles(x86)}\Logitech\LogiSync\sync-agent\uninst-agent.exe" -ArgumentList '/S' -Wait}"

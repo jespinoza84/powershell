@@ -79,7 +79,7 @@ try {
     # Send email to ServiceNow
     $LoggedOnUser = Get-WmiObject -Class Win32_ComputerSystem | Select-Object -ExpandProperty UserName
 
-    Write-Host "Sending $env:COMPUTERNAME.zip to tech@chobani.com"
+    Write-Host "Sending $env:COMPUTERNAME.zip to user@address.com"
 
     Send-MailMessage -From "<sender>" `
         -To "<recipient>" `
