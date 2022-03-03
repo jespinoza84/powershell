@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<plist version="1.0">
-<dict>
-        <key>EULAPath</key>
-        <string>/usr/local/bin/JamfConnect/Images/POL-IS-08-13 Acceptable Use Policy v1.pdf</string>
-        <key>ScriptPath</key>
-        <string>/usr/local/bin/JamfConnect/Script/JCLoginScript.sh</string>
-</dict>
-</plist>

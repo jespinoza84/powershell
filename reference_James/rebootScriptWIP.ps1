@@ -1,6 +1,6 @@
 ﻿# Site configuration
-$SiteCode = "NOR" # Site code 
-$ProviderMachineName = "sccm-no-01" # SMS Provider machine name
+$SiteCode = "abc" # Site code 
+$ProviderMachineName = "server.site.com" # SMS Provider machine name
 
 # Customizations
 $initParams = @{}
