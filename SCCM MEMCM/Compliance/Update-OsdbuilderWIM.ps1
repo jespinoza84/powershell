@@ -35,7 +35,7 @@
 
   # Import OSDBuilder module  
   Write-Log -LogString "Importing OSDBuilder module"
-  if((Get-Module osdbuilder) -eq $null) {
+  if($null -eq (Get-Module osdbuilder)) {
     Import-Module osdbuilder
   }
 
