@@ -1,6 +1,6 @@
-﻿# Site configuration
-$SiteCode = "abc" # Site code 
-$ProviderMachineName = "server.site.com" # SMS Provider machine name
+# Site configuration
+$SiteCode = "<SiteCode>" # Site code 
+$ProviderMachineName = "<FQDN>" # SMS Provider machine name
 
 # Customizations
 $initParams = @{}
@@ -27,26 +27,15 @@ function Get-SUGBootTime {
         )
 
     # Begin Script
-
-    # Get collections from Software Update Group
-
     $Collections = (Get-CMSoftwareUpdateDeployment -Name $SUGName).TargetCollectionID
 
-    # % collection in SUG, get the Roesource ID of each server in the collection
-
     foreach ($Collection in $Collections) {
-        $ResourceIDs = Get-CMDevice -CollectionID $Collection | select -ExpandProperty ResourceID
-    }
-
-    foreach ($Resource in $ResourceIDs){
-        $Servers = Get-CMResource -ResourceId $Resource -Fast | select -ExpandProperty ResourceNames
+        $Servers = Get-CMDevice -CollectionID $Collection | Select-Object -ExpandProperty Name
     }
 
     $output = foreach ($Server in $Servers) {
-       
-        $CheckBoot = Get-CimInstance -Query "Select * FROM Win32_OperatingSystem" -ComputerName $Server -ErrorAction SilentlyContinue |
+        $CheckBoot = Get-CimInstance -Query "Select * FROM Win32_OperatingSystem" -ComputerName $Server -ea 0 |
         Select-Object -ExpandProperty LastBootUpTime
-       
                  
         $Table = [PSCustomObject]@{
             Name = $Server
